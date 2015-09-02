@@ -1,20 +1,22 @@
 package main
 
-/*
-#cgo CFLAGS: -I/usr/include/mysql
-#include <mysql.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-*/
-import "C"
-import "unicode/utf8"
-import "os"
-import "os/exec"
-import "fmt"
+import (
+  /*
+  #cgo CFLAGS: -I/usr/include/mysql
+  #include <mysql.h>
+  #include <string.h>
+  #include <stdlib.h>
+  #include <stdio.h>
+  */
+  "C"
+  "unicode/utf8"
+  "os"
+  "os/exec"
+  "fmt"
+)
 
-//export myprint
-func myprint (initid *C.UDF_INIT, args *C.UDF_ARGS, result *C.char, length *C.ulong, is_null *C.char, error *C.char) *C.char {
+//export myexec
+func myexec (initid *C.UDF_INIT, args *C.UDF_ARGS, result *C.char, length *C.ulong, is_null *C.char, error *C.char) *C.char { 
   out, err := exec.Command(C.GoString(*args.args)).Output()
   if err != nil {
     fmt.Println(err)
@@ -25,8 +27,8 @@ func myprint (initid *C.UDF_INIT, args *C.UDF_ARGS, result *C.char, length *C.ul
   return result
 }
 
-//export myprint_init
-func myprint_init(initid *C.UDF_INIT, args *C.UDF_ARGS, message *C.char) C.my_bool{
+//export myexec_init
+func myexec_init(initid *C.UDF_INIT, args *C.UDF_ARGS, message *C.char) C.my_bool{
   if(int(args.arg_count) != 1) {
     return 1
   } else {
